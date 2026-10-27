@@ -1,117 +1,144 @@
-
 import java.util.ArrayList;
+import java.util.Scanner;
 
 class Book {
-    private String ISBN;
-    private String title;
-    private String author;
-    private double price;
+	private String ISBN;
+	private String title;
+	private String author;
+	private double price;
 
-    // Parameterized constructor
-    Book(String ISBN, String title, String author, double price) {
-        this.ISBN = ISBN;
-        this.title = title;
-        this.author = author;
-        this.price = price;
-    }
+	Book(String ISBN, String title, String author, double price) {
+		this.ISBN = ISBN;
+		this.title = title;
+		this.author = author;
+		this.price = price;
+	}
 
-    // Getter for ISBN
-    public String getISBN() {
-        return ISBN;
-    }
+	public String getISBN() {
+		return ISBN;
+	}
 
-    // Display book details
-    public void displayBook() {
-        System.out.println("ISBN: " + ISBN);
-        System.out.println("Title: " + title);
-        System.out.println("Author: " + author);
-        System.out.println("Price: Rs. " + price);
-        System.out.println("-------------------------");
-    }
-}
-
-class Library {
-    private ArrayList<Book> books = new ArrayList<>();
-
-    // Add a new book
-    public void addBook(Book book) {
-        for (Book b : books) {
-            if (b.getISBN().equals(book.getISBN())) {
-                System.out.println("Book with this ISBN already exists!");
-                return;
-            }
-        }
-
-        books.add(book);
-        System.out.println("Book added successfully!");
-    }
-
-    // Search book by ISBN
-    public void searchBook(String ISBN) {
-        for (Book b : books) {
-            if (b.getISBN().equals(ISBN)) {
-                System.out.println("Book found:");
-                b.displayBook();
-                return;
-            }
-        }
-
-        System.out.println("Book not found!");
-    }
-
-    // Display all books
-    public void displayBooks() {
-        if (books.isEmpty()) {
-            System.out.println("No books available.");
-            return;
-        }
-
-        System.out.println("\nLibrary Book List:");
-        for (Book b : books) {
-            b.displayBook();
-        }
-    }
-
-    // Remove book using ISBN
-    public void removeBook(String ISBN) {
-        for (int i = 0; i < books.size(); i++) {
-            if (books.get(i).getISBN().equals(ISBN)) {
-                books.remove(i);
-                System.out.println("Book removed successfully!");
-                return;
-            }
-        }
-
-        System.out.println("Book not found!");
-    }
+	public void display() {
+		System.out.println("ISBN: " + ISBN);
+		System.out.println("Title: " + title);
+		System.out.println("Author: " + author);
+		System.out.println("Price: Rs. " + price);
+		System.out.println("--------------------");
+	}
 }
 
 public class s2p4 {
-    public static void main(String[] args) {
-        Library library = new Library();
 
-        // Add books
-        library.addBook(new Book("B101",
-                "Java Programming", "Tawqeer ul Islam", 450));
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		ArrayList<Book> books = new ArrayList<>();
 
-        library.addBook(new Book("B102",
-                "C++ Programming", "John Smith", 500));
+		int choice;
 
-        library.addBook(new Book("B103",
-                "Python Basics", "James Brown", 400));
+		do {
+			System.out.println("\n1. Add Book");
+			System.out.println("2. Search Book");
+			System.out.println("3. Display All Books");
+			System.out.println("4. Remove Book");
+			System.out.println("5. Exit");
+			System.out.print("Enter choice: ");
 
-        // Try adding duplicate ISBN
-        library.addBook(new Book("B102",
-                "Advanced Java", "Amit Kumar", 600));
+			choice = sc.nextInt();
+			sc.nextLine();
 
-        // Search book
-        System.out.println("\nSearching for ISBN B102:");
-        library.searchBook("B102");
+			switch (choice) {
 
-        // Remove book
-        library.removeBook("B101");
+			case 1:
+				System.out.print("Enter ISBN: ");
+				String isbn = sc.nextLine();
 
-        // Display remaining books
-        library.displayBooks();
-    }
+				boolean exists = false;
+
+				for (Book b : books) {
+					if (b.getISBN().equals(isbn)) {
+						exists = true;
+						break;
+					}
+				}
+
+				if (exists) {
+					System.out.println("Duplicate ISBN! Book not added.");
+					break;
+				}
+
+				System.out.print("Enter title: ");
+				String title = sc.nextLine();
+
+				System.out.print("Enter author: ");
+				String author = sc.nextLine();
+
+				System.out.print("Enter price: ");
+				double price = sc.nextDouble();
+				sc.nextLine();
+
+				books.add(new Book(isbn, title, author, price));
+				System.out.println("Book added successfully!");
+				break;
+
+			case 2:
+				System.out.print("Enter ISBN to search: ");
+				String searchISBN = sc.nextLine();
+
+				boolean found = false;
+
+				for (Book b : books) {
+					if (b.getISBN().equals(searchISBN)) {
+						b.display();
+						found = true;
+						break;
+					}
+				}
+
+				if (!found) {
+					System.out.println("Book not found!");
+				}
+				break;
+
+			case 3:
+				if (books.isEmpty()) {
+					System.out.println("No books available.");
+				} else {
+					for (Book b : books) {
+						b.display();
+					}
+				}
+				break;
+
+			case 4:
+				System.out.print("Enter ISBN to remove: ");
+				String removeISBN = sc.nextLine();
+
+				boolean removed = false;
+
+				for (int i = 0; i < books.size(); i++) {
+					if (books.get(i).getISBN().equals(removeISBN)) {
+						books.remove(i);
+						removed = true;
+						System.out.println("Book removed successfully!");
+						break;
+					}
+				}
+
+				if (!removed) {
+					System.out.println("Book not found!");
+				}
+				break;
+
+			case 5:
+				System.out.println("Exiting library system...");
+				break;
+
+			default:
+				System.out.println("Invalid choice!");
+			}
+
+		} while (choice != 5);
+
+		sc.close();
+	}
 }
